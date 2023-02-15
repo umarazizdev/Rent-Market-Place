@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "606041006486",
+    "project_id": "figma2",
+    "storage_bucket": "figma2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606041006486:android:f6a0246bab98ace064fdb7",
+        "android_client_info": {
+          "package_name": "com.example.figma2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "606041006486-25ih9jgluqe1tdutvn8cstaqgu0q2oha.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADX_6gwEWbM3Nyq77X43Pp3EmJvgxaUZU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "606041006486-25ih9jgluqe1tdutvn8cstaqgu0q2oha.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
