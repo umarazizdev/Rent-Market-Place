@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Screens/BuyerScreens/HomeScreen/detailscreen.dart';
-import 'package:figma2/Screens/DetailScreens/categorydetail.dart';
 import 'package:figma2/Utilities/Colors/color.dart';
 import 'package:flutter/material.dart';
 
 class CategoryWidget extends StatelessWidget {
+  final bool location;
+
   const CategoryWidget({
-    Key? key,
-    required Stream<QuerySnapshot<Object?>> usersStream,
-  })  : _usersStream = usersStream,
-        super(key: key);
+    super.key,
+    required Stream<QuerySnapshot<Object?>> stream,
+    required this.location,
+  }) : _usersStream = stream;
 
   final Stream<QuerySnapshot<Object?>> _usersStream;
 
@@ -70,8 +71,12 @@ class CategoryWidget extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(
-                              height: 5,
+                              height: 8,
                             ),
+                            if (!location)
+                              const SizedBox(
+                                height: 10,
+                              ),
                             Text(
                               data['title'].toString(),
                               style: const TextStyle(
@@ -80,13 +85,14 @@ class CategoryWidget extends StatelessWidget {
                             const SizedBox(
                               height: 2,
                             ),
-                            Expanded(
-                              child: Text(
-                                data['location'],
-                                style: const TextStyle(
-                                    fontSize: 7, fontWeight: FontWeight.w500),
+                            if (location)
+                              Expanded(
+                                child: Text(
+                                  data['location'],
+                                  style: const TextStyle(
+                                      fontSize: 7, fontWeight: FontWeight.w500),
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),

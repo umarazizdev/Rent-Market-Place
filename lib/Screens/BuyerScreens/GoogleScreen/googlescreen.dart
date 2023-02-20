@@ -1,3 +1,4 @@
+import 'package:figma2/Utilities/SignUpScreen/signupscreen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Utilities/Colors/color.dart';
@@ -121,15 +122,7 @@ class _GoogleScreenState extends State<GoogleScreen> {
                   ),
                   InkWell(
                     onTap: (() {
-                      if (formKey.currentState!.validate()) {
-                        // ScaffoldMessenger.of(context).showSnackBar(
-                        //   const SnackBar(
-                        //     content: Center(
-                        //       child: Text('Processing Data'),
-                        //     ),
-                        //   ),
-                        // );
-                      }
+                      if (formKey.currentState!.validate()) {}
                     }),
                     child: Container(
                       height: 55,
@@ -154,12 +147,12 @@ class _GoogleScreenState extends State<GoogleScreen> {
                   ),
                   InkWell(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const SignUpScreen(),
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignUpScreen(),
+                        ),
+                      );
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 30.0),

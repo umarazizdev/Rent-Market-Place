@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:pandabar/main.view.dart';
 import 'package:pandabar/model.dart';
 
-import '../../Screens/BuyerScreens/MessageScreen/messagescreen.dart';
 import '../../Utilities/Colors/color.dart';
 
 class HomePage extends StatefulWidget {

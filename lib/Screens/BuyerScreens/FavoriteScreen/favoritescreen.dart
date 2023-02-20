@@ -44,7 +44,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 height: 21,
               ),
               const Text(
-                "Your Favourate List is Empty",
+                "Your Favourite List is Empty",
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700),
               )
             ],

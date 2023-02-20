@@ -1,17 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Utilities/Colors/color.dart';
-import 'package:figma2/Utilities/Widgets/bookwidget.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Utilities/Widgets/categorywidget.dart';
-import '../../../Utilities/Widgets/clotheswidget.dart';
-import '../../../Utilities/Widgets/furniturewidget.dart';
 import '../../../Utilities/Widgets/logoslistwidget.dart';
 import '../../../Utilities/Widgets/profilewidget.dart';
-import '../../../Utilities/Widgets/propertyWidget.dart';
 import '../../../Utilities/Widgets/searchwidget.dart';
 import '../../../Utilities/Widgets/seewidget.dart';
-import '../../../Utilities/Widgets/serviceswidget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,6 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
     final sizedBox = SizedBox(
       height: sc.height * 0.03,
     );
+    final spaceThingy = SizedBox(
+      height: sc.height * 0.01,
+    );
     return Scaffold(
       backgroundColor: gbackgroundClr,
       body: SingleChildScrollView(
@@ -71,37 +69,57 @@ class _HomeScreenState extends State<HomeScreen> {
                       text1: 'Categories',
                       text2: 'see all',
                     ),
-                    CategoryWidget(usersStream: _usersStream),
+                    CategoryWidget(
+                      stream: _usersStream,
+                      location: true,
+                    ),
                     // Property
+                    spaceThingy,
                     const SeeWidget(
                       text1: 'Property',
                       text2: 'see all',
                     ),
-                    PropertyWidget(homeStream: _homeStream),
+                    CategoryWidget(
+                      stream: _homeStream,
+                      location: true,
+                    ),
                     // Furniture
+                    spaceThingy,
                     const SeeWidget(
                       text1: 'Furniture',
                       text2: 'see all',
                     ),
-                    FurnitureWidget(furnitureStream: _furnitureStream),
+                    CategoryWidget(
+                      stream: _furnitureStream,
+                      location: false,
+                    ),
                     //Books
                     const SeeWidget(
                       text1: 'Books',
                       text2: 'see all',
                     ),
-                    BookWidget(booksStream: _booksStream),
+                    CategoryWidget(
+                      stream: _booksStream,
+                      location: false,
+                    ),
                     // Clothes
                     const SeeWidget(
                       text1: 'Clothes',
                       text2: 'see all',
                     ),
-                    ClothesWidget(clothesStream: _clothesStream),
+                    CategoryWidget(
+                      stream: _clothesStream,
+                      location: false,
+                    ),
                     // Services
                     const SeeWidget(
                       text1: 'Services',
                       text2: 'see all',
                     ),
-                    ServicesWidget(servicesStream: _servicesStream),
+                    CategoryWidget(
+                      stream: _servicesStream,
+                      location: false,
+                    ),
                   ],
                 ),
               ),

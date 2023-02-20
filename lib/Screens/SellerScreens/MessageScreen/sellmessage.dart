@@ -93,7 +93,7 @@ class _SellMessageScreenState extends State<SellMessageScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => SellChatScreen(
-                                ven: data1['vendorid'],
+                                ven: data1['customerid'],
                                 cus: data['name'],
                               ),
                             ),

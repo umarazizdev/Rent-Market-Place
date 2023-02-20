@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -66,11 +65,11 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
       stream: _usersStream,
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (snapshot.hasError) {
-          return Text('Something went wrong');
+          return const Text('Something went wrong');
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text("Loading");
+          return const Text("Loading");
         }
 
         return ListView.builder(
@@ -160,13 +159,10 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                           return null;
                         },
                         decoration: InputDecoration(
-                          // contentPadding:
-                          //     const EdgeInsets.only(left: 33, top: 22, bottom: 18),
                           labelText: data['name'],
                           labelStyle:
                               TextStyle(color: blackclr.withOpacity(0.6)),
                           floatingLabelBehavior: FloatingLabelBehavior.never,
-
                           suffixIcon: const Icon(
                             Icons.edit,
                             size: 20,

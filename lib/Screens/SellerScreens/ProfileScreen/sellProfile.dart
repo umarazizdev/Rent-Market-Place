@@ -21,18 +21,11 @@ class _SellProfileState extends State<SellProfile> {
       .collection('users')
       .where('uid', isEqualTo: box.read('uid'))
       .snapshots();
-  // final Stream<QuerySnapshot> _productStream = FirebaseFirestore.instance
-  //     .collection('products')
-  //     .snapshots();
-
   final _formKey = GlobalKey<FormState>();
   var name = TextEditingController();
   var lastname = TextEditingController();
 
   CollectionReference user = FirebaseFirestore.instance.collection('users');
-  final Stream<QuerySnapshot> _productStream =
-      FirebaseFirestore.instance.collection('products').snapshots();
-
   XFile? singleImage;
   chooseImage() async {
     return await ImagePicker().pickImage(source: ImageSource.gallery);

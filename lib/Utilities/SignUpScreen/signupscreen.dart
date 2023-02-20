@@ -16,6 +16,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  bool obsecureText = true;
   CollectionReference user = FirebaseFirestore.instance.collection('users');
   signUp() async {
     try {
@@ -266,6 +267,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(
                     width: 391,
                     child: TextFormField(
+                      obscureText: obsecureText,
                       controller: passwordcontroller,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -274,6 +276,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         return null;
                       },
                       decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              obsecureText = !obsecureText;
+                            });
+                          },
+                          icon: Icon(obsecureText
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                        ),
                         contentPadding: const EdgeInsets.only(
                             left: 33, top: 22, bottom: 18),
                         hintText: "Enter Password",

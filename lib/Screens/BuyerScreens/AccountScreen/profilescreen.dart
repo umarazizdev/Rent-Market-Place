@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Utilities/Colors/color.dart';
+import '../MessageScreen/messagescreen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -25,7 +26,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         (route) => false);
   }
 
-// build context
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProfilePhotoScreen(),
+                              builder: (context) => const ProfilePhotoScreen(),
                             ));
                       },
                       child: Row(
@@ -220,21 +220,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: Color(0xffD9D9D9),
                   ),
                   const SizedBox(height: 13),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 13),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          "assets/notification (1) 1.png",
-                          height: 27,
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const MessageScreen(),
                         ),
-                        const SizedBox(width: 14),
-                        const Text(
-                          "Notofication",
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.w400),
-                        ),
-                      ],
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 13),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            "assets/notification (1) 1.png",
+                            height: 27,
+                          ),
+                          const SizedBox(width: 14),
+                          const Text(
+                            "Notofication",
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.w400),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   const SizedBox(height: 13),

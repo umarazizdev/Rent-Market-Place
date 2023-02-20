@@ -22,7 +22,9 @@ class _LoginScreenState extends State<LoginScreen> {
   signin() async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailcontroller.text, password: passwordcontroller.text);
+        email: emailcontroller.text.trim(),
+        password: passwordcontroller.text.trim(),
+      );
       box.write("uid", credential.user!.uid);
       box.write("islogin", true);
       EasyLoading.showToast("Successfully signin");
@@ -42,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  bool obsecureText = true;
   final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -182,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 55,
                     width: 391,
                     child: TextFormField(
-                      obscureText: true,
+                      obscureText: obsecureText,
                       controller: passwordcontroller,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -191,6 +194,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         return null;
                       },
                       decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              obsecureText = !obsecureText;
+                            });
+                          },
+                          icon: Icon(
+                            obsecureText == true
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                        ),
                         contentPadding: const EdgeInsets.only(
                             left: 43, top: 23, bottom: 17),
                         hintText: "Enter Password",

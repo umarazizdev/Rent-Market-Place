@@ -21,19 +21,17 @@ class SellChatScreen extends StatefulWidget {
 }
 
 class _SellChatScreenState extends State<SellChatScreen> {
-  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
-      .collection('users')
-      .where('uid', isEqualTo: box.read('uid'))
-      .snapshots();
+  Stream<QuerySnapshot>? _usersStream;
   Stream<QuerySnapshot>? messageStream1;
   @override
   void initState() {
-    checkUserExistInbox();
+    // checkUserExistInbox();
 
     messageStream1 = FirebaseFirestore.instance
         .collection('Messages')
         .where('customerid', isEqualTo: widget.ven)
         .where('vendorid', isEqualTo: box.read('uid'))
+        .orderBy('createdAt', descending: true)
         .snapshots();
     super.initState();
   }
@@ -55,30 +53,6 @@ class _SellChatScreenState extends State<SellChatScreen> {
         'createdAt': Timestamp.now(),
       },
     );
-    if (!exist) {
-      addInbox();
-      setState(() {
-        exist = false;
-      });
-    }
-  }
-
-  bool exist = false;
-  checkUserExistInbox() async {
-    FirebaseFirestore.instance
-        .collection('inbox')
-        .where('customerid', isEqualTo: widget.ven)
-        .where('vendorid', isEqualTo: box.read('uid'))
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        if (doc.exists) {
-          setState(() {
-            exist = true;
-          });
-        }
-      });
-    });
   }
 
   Future<void> addInbox() {
@@ -99,7 +73,10 @@ class _SellChatScreenState extends State<SellChatScreen> {
         backgroundColor: wbackgroundclr.withOpacity(0.6),
         elevation: 0,
         title: StreamBuilder<QuerySnapshot>(
-          stream: _usersStream,
+          stream: _usersStream = FirebaseFirestore.instance
+              .collection('users')
+              .where('uid', isEqualTo: widget.ven)
+              .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
