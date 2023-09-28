@@ -24,6 +24,9 @@ class _ScreenLayoutState extends State<ScreenLayout> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(left: 8.0, top: 7),
         child: FloatingActionButton(
+           shape: BeveledRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
             child: const Center(
               child: Text(
                 "Sell",
