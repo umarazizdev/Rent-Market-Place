@@ -669,27 +669,6 @@ class _SellingScreenState extends State<SellingScreen> {
                       ),
                     ),
                   ),
-                  // Center(
-                  //   child: SizedBox(
-                  //     height: 40,
-                  //     width: double.infinity,
-                  //     child: MaterialButton(
-                  //       shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(10),
-                  //       ),
-                  //       color: primaryClr,
-                  //       onPressed: () {},
-                  //       child: const Text(
-                  //         "Next",
-                  //         style: TextStyle(
-                  //           color: whiteclr,
-                  //           fontSize: 17,
-                  //           fontWeight: FontWeight.w400,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(
                     height: 25,
                   ),

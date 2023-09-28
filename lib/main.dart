@@ -18,14 +18,6 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // Future userSignIn() async {
-  //   if (box.read('islogin') == true) {
-  //     return const WelcomeScreen();
-  //   } else {
-  //     return const LoginScreen();
-  //   }
-  // }
-
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {

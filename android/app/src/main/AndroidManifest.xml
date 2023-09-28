@@ -8,7 +8,7 @@
 
 
    <application
-        android:label="figma2"
+        android:label="Rent Market Place"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
