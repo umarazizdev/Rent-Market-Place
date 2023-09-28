@@ -62,7 +62,7 @@ We welcome contributions to improve and enhance the app. If you'd like to contri
 
 ## Screenshots
 
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/images/1.jpg)
+![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/screenshot/1.jpg)
 ![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/images/2.jpg)
 ![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/images/3.jpg)
 ![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/images/4.jpg)
