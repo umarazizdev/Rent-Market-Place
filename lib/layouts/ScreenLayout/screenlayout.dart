@@ -26,7 +26,11 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(left: 8.0, top: 7),
         child: FloatingActionButton(
+<<<<<<< HEAD
             shape: BeveledRectangleBorder(
+=======
+           shape: BeveledRectangleBorder(
+>>>>>>> 67543b5d430ee39e3b16b0ec6630bb654577781e
               borderRadius: BorderRadius.circular(18),
             ),
             child: const Center(
