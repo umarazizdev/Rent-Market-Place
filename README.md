@@ -1,36 +1,36 @@
-# Rent Marketplace Flutter App
+# 🏠 Rent Marketplace Flutter App
 
-## Overview
+## 📝 Overview
 
 This Flutter app is a rent marketplace that connects property owners and tenants, allowing property owners to list their rental properties and tenants to search and interact with these properties directly through the app. The app provides a user-friendly interface and a set of essential features to facilitate property renting and communication between property owners and tenants.
 
-## Features
+## ✨ Features
 
-### 1. Product Listing
+### 1. 🏢 Product Listing
 
 - Property owners can list their rental properties with detailed information, including property details, location, images, and pricing.
 
-### 2. Chat with Seller
+### 2. 💬 Chat with Seller
 
 - Tenants can communicate with property owners through an in-app chat system to discuss property details, negotiate terms, and ask questions.
 
-### 3. Seller and Buyer Inbox
+### 3. 📬 Seller and Buyer Inbox
 
 - The app includes a dedicated inbox for both sellers (property owners) and buyers (tenants) to manage their conversations and inquiries conveniently.
 
-### 4. Two-Sided Marketplace
+### 4. 💼 Two-Sided Marketplace
 
 - The app serves as a two-sided marketplace, allowing property owners and tenants to interact seamlessly, ensuring a smooth rental process.
 
-### 5. Map Navigation
+### 5. 🗺️ Map Navigation
 
 - Users can access a built-in map feature to locate rental properties accurately and visualize their proximity to important landmarks or services.
 
-### 6. User Profile Management
+### 6. 👤 User Profile Management
 
 - Users can create and manage their profiles, including personal information, contact details, and preferences.
 
-### 7. List and Manage Properties
+### 7. 📝 List and Manage Properties
 
 - Property owners can easily list and manage multiple rental properties, edit property information, and mark properties as available or unavailable.
 
@@ -43,35 +43,37 @@ To run the app locally, follow these steps:
 3. Navigate to the app's directory and run `flutter pub get` to install dependencies.
 4. Run `flutter run` to start the app on your device or emulator.
 
-## Usage
+## 🚀 Usage
 
 - Upon launching the app, users can create an account or log in.
 - Property owners can list their properties, while tenants can search for available rentals.
 - Users can communicate with each other using the in-app chat.
 - The map feature helps users locate properties on a map and get directions.
 - User profiles can be managed in the settings section.
+## Screenshots
 
-## Contributing
+| Home | Chat | Profile |
+|---|---|---|
+| ![Home](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/1.jpg) | ![Chat](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/2.jpg) | ![Profile](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/3.jpg) |
 
-We welcome contributions to improve and enhance the app. If you'd like to contribute, please follow our [contribution guidelines](CONTRIBUTING.md).
+| Inbox | Map | Property Listing |
+|---|---|---|
+| ![Inbox](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/4.jpg) | ![Map](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/5.jpg) | ![Property Listing](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/6.jpg) |
+
+| Property Details | Property Management | Login |
+|---|---|---|
+| ![Property Details](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/7.jpg) | ![Property Management](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/8.jpg) | ![Login](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/9.jpg) |
+
+| Sign Up | Filter | Settings |
+|---|---|---|
+| ![Sign Up](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/10.jpg) | ![Filter](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/11.jpg) | ![Settings](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/12.jpg) |
 
 ## Acknowledgments
 
 - This app was built with the Flutter framework.
 - We appreciate the open-source community for their contributions and support.
 
-## Screenshots
-
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/1.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/2.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/3.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/4.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/5.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/6.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/7.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/8.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/9.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/10.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/11.jpg)
-![alt text](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/12.jpg)
-
+## 🤝 Contributing 
+ Contributions are welcome! Please follow our contribution guidelines.
+ ## 📬 Contact
+ For inquiries, please contact umar.aziz.dev@gmail.com.
