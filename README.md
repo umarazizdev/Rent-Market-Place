@@ -34,14 +34,6 @@ This Flutter app is a rent marketplace that connects property owners and tenants
 
 - Property owners can easily list and manage multiple rental properties, edit property information, and mark properties as available or unavailable.
 
-## Installation
-
-To run the app locally, follow these steps:
-
-1. Clone the repository to your local machine.
-2. Ensure you have Flutter installed. If not, you can follow the [Flutter installation guide](https://flutter.dev/docs/get-started/install) for your platform.
-3. Navigate to the app's directory and run `flutter pub get` to install dependencies.
-4. Run `flutter run` to start the app on your device or emulator.
 
 ## 🚀 Usage
 
@@ -52,22 +44,38 @@ To run the app locally, follow these steps:
 - User profiles can be managed in the settings section.
 ## Screenshots
 
-| Home | Chat | Profile |
+| Login/Signup | Property Listing | Property Details |
 |---|---|---|
 | ![Home](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/1.jpg) | ![Chat](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/2.jpg) | ![Profile](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/3.jpg) |
 
-| Inbox | Map | Property Listing |
+| Chat With Seller| Buyer Inbox  | Payment Method |
 |---|---|---|
 | ![Inbox](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/4.jpg) | ![Map](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/5.jpg) | ![Property Listing](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/6.jpg) |
 
-| Property Details | Property Management | Login |
+| Profile | Filter Messages/Notification | Seller Home Screen |
 |---|---|---|
 | ![Property Details](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/7.jpg) | ![Property Management](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/8.jpg) | ![Login](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/9.jpg) |
 
-| Sign Up | Filter | Settings |
+| Seller Inbox | Chat With Buyer | Map |
 |---|---|---|
 | ![Sign Up](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/10.jpg) | ![Filter](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/11.jpg) | ![Settings](https://github.com/umarazizdev/Rent-Market-Place/blob/main/assets/screenshot/12.jpg) |
+### Installation
 
+1. **Clone the repository:**
+   ```bash
+   git clonehttps://github.com/umarazizdev/Rent-Market-Place.git
+2. **Navigate to the project directory:**
+   ```bash
+   cd Konstructora
+
+3. **Install dependencies:**
+   ```bash
+   flutter pub get
+
+4. **Run the app:**
+   ```bash
+   flutter run
+ 
 ## Acknowledgments
 
 - This app was built with the Flutter framework.
