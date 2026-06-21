@@ -227,7 +227,7 @@ class _SellChatScreenState extends State<SellChatScreen> {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      validator: (value) {},
+                      validator: (value) => null,
                       onSaved: (value) {
                         message.text = value!;
                       },

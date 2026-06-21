@@ -102,7 +102,7 @@ class _BottomMeassageBarState extends State<BottomMeassageBar> {
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  validator: (value) {},
+                  validator: (value) => null,
                   onSaved: (value) {
                     message.text = value!;
                   },
