@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Screens/BuyerScreens/MessageScreen/chatscreen.dart';
+import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
 import 'package:figma2/main.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -103,14 +104,10 @@ class _BuyerInboxState extends State<BuyerInbox> {
                             ),
                           );
                         },
-                        leading: CircleAvatar(
-                          backgroundImage: data['image'] == true
-                              ? NetworkImage(
-                                  data['avatar'],
-                                )
-                              : const NetworkImage(
-                                  "https://www.lightsong.net/wp-content/uploads/2020/12/blank-profile-circle.png",
-                                ),
+                        leading: SafeAvatar(
+                          url: data['image'] == true
+                              ? data['avatar']?.toString()
+                              : null,
                         ),
                         title: Text(data['name']),
                       ),

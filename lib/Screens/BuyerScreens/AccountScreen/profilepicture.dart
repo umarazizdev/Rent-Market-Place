@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Utilities/Colors/color.dart';
+import 'package:figma2/Utilities/Supabase/supabase_storage_service.dart';
+import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
 import 'package:figma2/main.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,31 +33,25 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
     return await ImagePicker().pickImage(source: ImageSource.gallery);
   }
 
-///////////////
-  String getImageName(XFile image) {
-    return image.path.split("/").last;
-  }
-
-//upload data
   Future<String> uploadImage(XFile image) async {
-    Reference db = FirebaseStorage.instance.ref("image/${getImageName(image)}");
-
-    await db.putFile(File(image.path));
-    return await db.getDownloadURL().then((value) async {
-      user
-          .doc(box.read('uid'))
-          .set({
-            'avatar': value,
-            'image': true,
-            'name': name.text,
-            'uid': box.read('uid')
-          })
-          .then((value) => print('Product Edited'))
-          .whenComplete(() => EasyLoading.showSuccess("Successfully Added"))
-          .catchError((error) => print("failedtoadduser: $error"));
-
+    try {
+      final value = await SupabaseStorageService.uploadImage(
+        image,
+        folder: 'avatars',
+      );
+      await user.doc(box.read('uid')).set({
+        'avatar': value,
+        'image': true,
+        'name': name.text,
+        'uid': box.read('uid')
+      });
+      EasyLoading.showSuccess("Successfully Added");
+      return value;
+    } catch (error) {
+      EasyLoading.showError('Upload failed');
+      print("failedtoadduser: $error");
       return '';
-    });
+    }
   }
 
   @override
@@ -115,8 +110,10 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                                     )
                                   : Stack(
                                       children: [
-                                        Image.network(
-                                            "https://www.lightsong.net/wp-content/uploads/2020/12/blank-profile-circle.png"),
+                                        SafeAvatar(
+                                          url: data['avatar']?.toString(),
+                                          radius: 55,
+                                        ),
                                         Positioned(
                                             bottom: 0,
                                             right: 0,

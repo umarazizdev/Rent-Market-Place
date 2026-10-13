@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Screens/BuyerScreens/MessageScreen/chatscreen.dart';
 import 'package:figma2/Utilities/Colors/color.dart';
+import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
+import 'package:figma2/main.dart';
 import 'package:flutter/material.dart';
 
 class GetUserName extends StatefulWidget {
@@ -64,17 +66,10 @@ class _GetUserNameState extends State<GetUserName> {
                         ],
                       ),
                       SizedBox(height: sc.height * 0.03),
-                      Container(
+                      SafeNetworkImage(
+                        url: data['image']?.toString(),
                         height: sc.height * 0.3,
                         width: double.infinity,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                              data['image'],
-                            ),
-                          ),
-                        ),
                       ),
                       SizedBox(height: sc.height * 0.03),
                       Row(
@@ -112,35 +107,38 @@ class _GetUserNameState extends State<GetUserName> {
                         style: const TextStyle(color: Colors.grey),
                       ),
                       SizedBox(height: sc.height * 0.1),
-                      Center(
-                        child: SizedBox(
-                          height: sc.height * 0.075,
-                          width: sc.width * 0.7,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ChatScreen(
-                                    id: data['uid'],
+                      // Hide when current user owns this product (seller viewing own listing).
+                      if (box.read('uid')?.toString() !=
+                          data['uid']?.toString())
+                        Center(
+                          child: SizedBox(
+                            height: sc.height * 0.075,
+                            width: sc.width * 0.7,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ChatScreen(
+                                      id: data['uid'],
+                                    ),
+                                  ),
+                                );
+                              },
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
                                   ),
                                 ),
-                              );
-                            },
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
                               ),
-                            ),
-                            child: const Text(
-                              'Contact to Seller',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              child: const Text(
+                                'Contact to Seller',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),

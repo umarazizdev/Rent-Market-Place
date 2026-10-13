@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Screens/BuyerScreens/HomeScreen/detailscreen.dart';
 import 'package:figma2/Utilities/Colors/color.dart';
+import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
 import 'package:flutter/material.dart';
 
 class CategoryWidget extends StatelessWidget {
@@ -31,75 +32,89 @@ class CategoryWidget extends StatelessWidget {
         }
 
         return SizedBox(
-          height: 103,
+          height: 110,
           child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                final data = snapshot.data!.docs[index];
-                return Padding(
-                  padding: const EdgeInsets.only(left: 7.0, right: 7, top: 7),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => GetUserName(
-                                    documentId: data.id,
-                                  )));
-                    },
-                    child: Container(
-                      height: 91,
-                      width: 69,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xff928D8D)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 39,
-                              width: 55,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(2),
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(data['image']),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            if (!location)
-                              const SizedBox(
-                                height: 10,
-                              ),
-                            Text(
-                              data['title'].toString(),
-                              style: const TextStyle(
-                                  fontSize: 8, fontWeight: FontWeight.w300),
-                            ),
-                            const SizedBox(
-                              height: 2,
-                            ),
-                            if (location)
-                              Expanded(
-                                child: Text(
-                                  data['location'],
-                                  style: const TextStyle(
-                                      fontSize: 7, fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                          ],
+            scrollDirection: Axis.horizontal,
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              final data = snapshot.data!.docs[index];
+              return Padding(
+                padding: const EdgeInsets.only(left: 7.0, right: 7, top: 7),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GetUserName(
+                          documentId: data.id,
                         ),
                       ),
+                    );
+                  },
+                  child: Container(
+                    height: 96,
+                    width: 69,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xff928D8D)),
+                    ),
+                    padding: const EdgeInsets.all(5.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SafeNetworkImage(
+                          url: data['image']?.toString(),
+                          height: 36,
+                          width: double.infinity,
+                          borderRadius: BorderRadius.circular(2),
+                          placeholder: Container(
+                            color: const Color(0xffD9D9D9),
+                            child: const Icon(
+                              Icons.image_outlined,
+                              size: 16,
+                              color: Color(0xff928D8D),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                data['title'].toString(),
+                                maxLines: location ? 1 : 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 8,
+                                  fontWeight: FontWeight.w300,
+                                  height: 1.2,
+                                ),
+                              ),
+                              if (location) ...[
+                                const SizedBox(height: 2),
+                                Expanded(
+                                  child: Text(
+                                    data['location']?.toString() ?? '',
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 7,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              }),
+                ),
+              );
+            },
+          ),
         );
       },
     );

@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:figma2/Utilities/Supabase/supabase_storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,38 +27,35 @@ class _SellingScreenState extends State<SellingScreen> {
     return await ImagePicker().pickImage(source: ImageSource.gallery);
   }
 
-  String getImageName(XFile image) {
-    return image.path.split("/").last;
-  }
-
   Future<String> uploadImage(XFile image) async {
-    Reference db = FirebaseStorage.instance.ref("image/${getImageName(image)}");
-
-    await db.putFile(File(image.path));
-    return await db.getDownloadURL().then((value) async {
-      users
-          .add({
-            'image': value,
-            'brand': brand.text,
-            'description': description.text,
-            'price': price.text,
-            'title': title.text,
-            'location': location.text,
-            "Category": selectCategory,
-            'star1': 0,
-            'star2': 0,
-            'star3': 0,
-            'star4': 0,
-            'star5': 0,
-            'publish': false,
-            'uid': box.read('uid')
-          })
-          .then((value) => print('Product Edited'))
-          .whenComplete(() => EasyLoading.showSuccess("Successfully Added"))
-          .catchError((error) => print("failedtoadduser: $error"));
-
+    try {
+      final value = await SupabaseStorageService.uploadImage(
+        image,
+        folder: 'products',
+      );
+      await users.add({
+        'image': value,
+        'brand': brand.text,
+        'description': description.text,
+        'price': price.text,
+        'title': title.text,
+        'location': location.text,
+        "Category": selectCategory,
+        'star1': 0,
+        'star2': 0,
+        'star3': 0,
+        'star4': 0,
+        'star5': 0,
+        'publish': false,
+        'uid': box.read('uid')
+      });
+      EasyLoading.showSuccess("Successfully Added");
+      return value;
+    } catch (error) {
+      EasyLoading.showError('Upload failed');
+      print("failedtoadduser: $error");
       return '';
-    });
+    }
   }
 
   bool isopen = false;

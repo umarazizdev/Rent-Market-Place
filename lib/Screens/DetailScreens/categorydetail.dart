@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Screens/BuyerScreens/HomeScreen/detailscreen.dart';
+import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../Models/Logos/logosmodel.dart';
 import '../../Utilities/Colors/color.dart';
-import '../../main.dart';
 
 class CarScreen extends StatefulWidget {
   final Logos details;
@@ -80,7 +80,7 @@ class _CarScreenState extends State<CarScreen> {
                         final data = snapshot.data!.docs[index];
 
                         return Container(
-                          height: 180,
+                          height: 190,
                           width: 155,
                           decoration: BoxDecoration(
                             border: Border.all(color: blackclr),
@@ -98,80 +98,74 @@ class _CarScreenState extends State<CarScreen> {
                                             GetUserName(documentId: data.id),
                                       ));
                                 },
-                                child: Container(
-                                  height: 123,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(data['image'])),
-                                    color: blackclr,
-                                    borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(4.5),
-                                        topRight: Radius.circular(4.5)),
+                                child: SafeNetworkImage(
+                                  url: data['image']?.toString(),
+                                  height: 118,
+                                  width: double.infinity,
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(4.5),
+                                    topRight: Radius.circular(4.5),
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 4,
-                                    ),
-                                    Text(
-                                      data['title'],
-                                      style: const TextStyle(
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                      8.0, 4.0, 7.0, 6.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        data['title']?.toString() ?? '',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
                                           fontSize: 11,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                    const SizedBox(
-                                      height: 2,
-                                    ),
-                                    Text(
-                                      data['location'],
-                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          height: 1.2,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        data['location']?.toString() ?? '',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
                                           color: Color(0xff7D756C),
                                           fontSize: 9,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
+                                          fontWeight: FontWeight.w400,
+                                          height: 1.2,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              '${data['price']}/Week only',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontSize: 9,
+                                                color: blackclr,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ),
+                                          const Icon(
+                                            Icons.favorite_border,
+                                            color: Color(0xffB7B7B7),
+                                            size: 11,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              const SizedBox(
-                                height: 9,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 7.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    RichText(
-                                      text: TextSpan(
-                                          text: data['price'],
-                                          style: const TextStyle(
-                                              fontSize: 9,
-                                              color: blackclr,
-                                              fontWeight: FontWeight.w700),
-                                          children: const [
-                                            TextSpan(
-                                              text: "/Week only",
-                                              style: TextStyle(
-                                                  fontSize: 9,
-                                                  color: blackclr,
-                                                  fontWeight: FontWeight.w700),
-                                            )
-                                          ]),
-                                    ),
-                                    const Icon(
-                                      Icons.favorite_border,
-                                      color: Color(0xffB7B7B7),
-                                      size: 11,
-                                    ),
-                                  ],
-                                ),
-                              )
                             ],
                           ),
                         );

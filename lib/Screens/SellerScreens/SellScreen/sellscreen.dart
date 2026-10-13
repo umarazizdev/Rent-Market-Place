@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Models/Logos/logosmodel.dart';
 import 'package:figma2/Screens/DetailScreens/categorydetail.dart';
+import 'package:figma2/Utilities/Supabase/supabase_storage_service.dart';
+import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
+import 'package:figma2/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../Utilities/Colors/color.dart';
 import '../../BuyerScreens/HomeScreen/detailscreen.dart';
@@ -15,8 +20,40 @@ class SellScreen extends StatefulWidget {
 }
 
 class _SellScreenState extends State<SellScreen> {
-  final Stream<QuerySnapshot> _usersStream =
-      FirebaseFirestore.instance.collection('products').snapshots();
+  late final Stream<QuerySnapshot> _usersStream;
+
+  @override
+  void initState() {
+    super.initState();
+    final uid = box.read('uid');
+    _usersStream = uid == null || uid.toString().isEmpty
+        ? FirebaseFirestore.instance.collection('products').snapshots()
+        : FirebaseFirestore.instance
+            .collection('products')
+            .where('uid', isEqualTo: uid)
+            .snapshots();
+  }
+
+  Future<void> _updateProductImage(String productId) async {
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (picked == null) return;
+
+    EasyLoading.show(status: 'Updating image...');
+    try {
+      final url = await SupabaseStorageService.uploadImage(
+        picked,
+        folder: 'products',
+      );
+      await FirebaseFirestore.instance
+          .collection('products')
+          .doc(productId)
+          .update({'image': url});
+      EasyLoading.showSuccess('Image updated');
+    } catch (e) {
+      EasyLoading.showError('Image update failed');
+      print('update image failed: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +188,24 @@ class _SellScreenState extends State<SellScreen> {
                 ),
               ),
               const SizedBox(
-                height: 20,
+                height: 12,
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Tap the camera icon to update product image only',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Color(0xff7D756C),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 12,
               ),
               StreamBuilder<QuerySnapshot>(
                 stream: _usersStream,
@@ -167,6 +221,14 @@ class _SellScreenState extends State<SellScreen> {
                       color: primaryClr,
                     );
                   }
+
+                  if (snapshot.data!.docs.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.all(24.0),
+                      child: Text('No products found for your account'),
+                    );
+                  }
+
                   return Padding(
                     padding: const EdgeInsets.only(left: 12.0, right: 20),
                     child: AlignedGridView.count(
@@ -178,6 +240,9 @@ class _SellScreenState extends State<SellScreen> {
                         crossAxisCount: 2,
                         itemBuilder: (context, index) {
                           final data = snapshot.data!.docs[index];
+                          final imageUrl = (data.data()
+                                  as Map<String, dynamic>)['image']
+                              ?.toString();
 
                           return InkWell(
                             onTap: () {
@@ -189,7 +254,7 @@ class _SellScreenState extends State<SellScreen> {
                                           )));
                             },
                             child: Container(
-                              height: 180,
+                              height: 190,
                               width: 155,
                               decoration: BoxDecoration(
                                 border: Border.all(color: blackclr),
@@ -198,83 +263,102 @@ class _SellScreenState extends State<SellScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    height: 123,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(data['image'])),
-                                      color: blackclr,
-                                      borderRadius: const BorderRadius.only(
+                                  Stack(
+                                    children: [
+                                      SafeNetworkImage(
+                                        url: imageUrl,
+                                        height: 118,
+                                        width: double.infinity,
+                                        borderRadius: const BorderRadius.only(
                                           topLeft: Radius.circular(4.5),
-                                          topRight: Radius.circular(4.5)),
-                                    ),
+                                          topRight: Radius.circular(4.5),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 6,
+                                        right: 6,
+                                        child: Material(
+                                          color: primaryClr,
+                                          shape: const CircleBorder(),
+                                          child: InkWell(
+                                            customBorder:
+                                                const CircleBorder(),
+                                            onTap: () =>
+                                                _updateProductImage(data.id),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(6.0),
+                                              child: Icon(
+                                                Icons.photo_camera,
+                                                color: Colors.white,
+                                                size: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const SizedBox(
-                                          height: 4,
-                                        ),
-                                        Text(
-                                          data['title'],
-                                          style: const TextStyle(
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          8.0, 4.0, 7.0, 6.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            data['title']?.toString() ?? '',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
                                               fontSize: 11,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        const SizedBox(
-                                          height: 2,
-                                        ),
-                                        Text(
-                                          data['location'],
-                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              height: 1.2,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            data['location']?.toString() ??
+                                                '',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
                                               color: Color(0xff7D756C),
                                               fontSize: 9,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 9,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 7.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        RichText(
-                                          text: TextSpan(
-                                            text: data['price'],
-                                            style: const TextStyle(
-                                                fontSize: 9,
-                                                color: blackclr,
-                                                fontWeight: FontWeight.w700),
-                                            children: const [
-                                              TextSpan(
-                                                text: "/Week only",
-                                                style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              height: 1.2,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                  '${data['price']}/Week only',
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
                                                     fontSize: 9,
                                                     color: blackclr,
                                                     fontWeight:
-                                                        FontWeight.w700),
-                                              )
+                                                        FontWeight.w700,
+                                                  ),
+                                                ),
+                                              ),
+                                              const Icon(
+                                                Icons.favorite_border,
+                                                color: Color(0xffB7B7B7),
+                                                size: 11,
+                                              ),
                                             ],
                                           ),
-                                        ),
-                                        const Icon(
-                                          Icons.favorite_border,
-                                          color: Color(0xffB7B7B7),
-                                          size: 11,
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             ),

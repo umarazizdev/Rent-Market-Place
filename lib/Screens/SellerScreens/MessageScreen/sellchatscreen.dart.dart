@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Screens/SellerScreens/MessageScreen/receiverbubble.dart';
 import 'package:figma2/Screens/SellerScreens/MessageScreen/sellmesssagebody.dart';
 import 'package:figma2/Utilities/Colors/color.dart';
+import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
 import 'package:figma2/main.dart';
 import 'package:flutter/material.dart';
 
@@ -97,14 +98,10 @@ class _SellChatScreenState extends State<SellChatScreen> {
                   onTap: () {},
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        backgroundImage: data['image'] == true
-                            ? NetworkImage(
-                                data['avatar'],
-                              )
-                            : const NetworkImage(
-                                "https://www.lightsong.net/wp-content/uploads/2020/12/blank-profile-circle.png",
-                              ),
+                      SafeAvatar(
+                        url: data['image'] == true
+                            ? data['avatar']?.toString()
+                            : null,
                       ),
                       SizedBox(
                         width: sc.width * 0.013,

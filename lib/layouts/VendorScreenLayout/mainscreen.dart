@@ -1,5 +1,6 @@
 import 'package:figma2/Screens/SellerScreens/MessageScreen/sellmessage.dart';
 import 'package:figma2/Screens/SellerScreens/SellScreen/sellscreen.dart';
+import 'package:figma2/Screens/SellerScreens/SellingScreen/sellingscreeen.dart';
 import 'package:flutter/material.dart';
 import 'package:pandabar/main.view.dart';
 import 'package:pandabar/model.dart';
@@ -17,6 +18,16 @@ class ScreenLayout extends StatefulWidget {
 
 class _ScreenLayoutState extends State<ScreenLayout> {
   String page = 'Home';
+
+  void _openAddProduct() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SellingScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,7 +44,7 @@ class _ScreenLayoutState extends State<ScreenLayout> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ),
-            onPressed: () {}),
+            onPressed: _openAddProduct),
       ),
       extendBody: true,
       bottomNavigationBar: SizedBox(
@@ -58,7 +69,7 @@ class _ScreenLayoutState extends State<ScreenLayout> {
               page = id;
             });
           },
-          onFabButtonPressed: () {},
+          onFabButtonPressed: _openAddProduct,
         ),
       ),
       body: Builder(

@@ -1,5 +1,6 @@
 import 'package:figma2/Screens/BuyerScreens/MessageScreen/message.dart';
 import 'package:figma2/Utilities/Colors/color.dart';
+import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../main.dart';
@@ -50,14 +51,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 final data = snapshot.data!.docs[index];
                 return Row(
                   children: [
-                    CircleAvatar(
-                      backgroundImage: data['image'] == true
-                          ? NetworkImage(
-                              data['avatar'],
-                            )
-                          : const NetworkImage(
-                              "https://www.lightsong.net/wp-content/uploads/2020/12/blank-profile-circle.png",
-                            ),
+                    SafeAvatar(
+                      url: data['image'] == true
+                          ? data['avatar']?.toString()
+                          : null,
                     ),
                     SizedBox(
                       width: sc.width * 0.013,
