@@ -40,10 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
      .collection('products')
      .where('Category', isEqualTo: 'Clothes')
      .snapshots();
-  final Stream<QuerySnapshot> _servicesStream = FirebaseFirestore.instance
-     .collection('products')
-     .where('Category', isEqualTo: 'Services')
-     .snapshots();
 
   Stream<QuerySnapshot> get _searchStream =>
       FirebaseFirestore.instance.collection('products').snapshots();
@@ -224,14 +220,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           CategoryWidget(
                               stream: _clothesStream, location: false),
-                          const SizedBox(height: 10),
-                          InkWell(
-                            onTap: () => _goToSeeAll('Services', false),
-                            child: const SeeWidget(
-                                text1: 'Services', text2: 'see all'),
-                          ),
-                          CategoryWidget(
-                              stream: _servicesStream, location: false),
                         ],
                       ),
               ),

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Screens/BuyerScreens/MessageScreen/chatscreen.dart';
 import 'package:figma2/Utilities/Colors/color.dart';
-import 'package:figma2/Utilities/Widgets/product_image_replace_button.dart';
 import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
 import 'package:figma2/main.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +55,6 @@ class _GetUserNameState extends State<GetUserName> {
             currentUid.isNotEmpty &&
             currentUid == data['uid']?.toString();
         final imageUrl = data['image']?.toString();
-        final needsReplace = SafeNetworkImage.isUnusableUrl(imageUrl);
 
         return Scaffold(
           body: SingleChildScrollView(
@@ -88,45 +86,12 @@ class _GetUserNameState extends State<GetUserName> {
                       ],
                     ),
                     SizedBox(height: sc.height * 0.03),
-                    Stack(
-                      children: [
-                        SafeNetworkImage(
-                          url: imageUrl,
-                          height: sc.height * 0.3,
-                          width: double.infinity,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        if (isOwner)
-                          Positioned(
-                            top: 10,
-                            right: 10,
-                            child: ProductImageReplaceButton(
-                              productId: widget.documentId,
-                            ),
-                          ),
-                      ],
+                    SafeNetworkImage(
+                      url: imageUrl,
+                      height: sc.height * 0.3,
+                      width: double.infinity,
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    if (isOwner) ...[
-                      const SizedBox(height: 12),
-                      ProductImageReplaceButton(
-                        productId: widget.documentId,
-                        compact: false,
-                        label: needsReplace
-                            ? 'Upload image to Supabase'
-                            : 'Replace image',
-                      ),
-                      if (needsReplace)
-                        const Padding(
-                          padding: EdgeInsets.only(top: 6.0),
-                          child: Text(
-                            'This listing still uses a broken Firebase Storage URL. Upload a new image to store it on Supabase.',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Color(0xff7D756C),
-                            ),
-                          ),
-                        ),
-                    ],
                     SizedBox(height: sc.height * 0.03),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Models/Logos/logosmodel.dart';
 import 'package:figma2/Screens/DetailScreens/categorydetail.dart';
-import 'package:figma2/Utilities/Widgets/product_image_replace_button.dart';
 import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
 import 'package:figma2/main.dart';
 import 'package:flutter/material.dart';
@@ -167,23 +166,6 @@ class _SellScreenState extends State<SellScreen> {
               const SizedBox(
                 height: 12,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Tap the camera icon to update product image only',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Color(0xff7D756C),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 12,
-              ),
               StreamBuilder<QuerySnapshot>(
                 stream: _usersStream,
                 builder: (BuildContext context,
@@ -240,25 +222,14 @@ class _SellScreenState extends State<SellScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Stack(
-                                    children: [
-                                      SafeNetworkImage(
-                                        url: imageUrl,
-                                        height: 118,
-                                        width: double.infinity,
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(4.5),
-                                          topRight: Radius.circular(4.5),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: 6,
-                                        right: 6,
-                                        child: ProductImageReplaceButton(
-                                          productId: data.id,
-                                        ),
-                                      ),
-                                    ],
+                                  SafeNetworkImage(
+                                    url: imageUrl,
+                                    height: 118,
+                                    width: double.infinity,
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(4.5),
+                                      topRight: Radius.circular(4.5),
+                                    ),
                                   ),
                                   Expanded(
                                     child: Padding(

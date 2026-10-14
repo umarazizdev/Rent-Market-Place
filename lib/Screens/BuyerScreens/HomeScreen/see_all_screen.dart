@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Screens/BuyerScreens/HomeScreen/detailscreen.dart';
 import 'package:figma2/Utilities/Colors/color.dart';
-import 'package:figma2/Utilities/Widgets/product_image_replace_button.dart';
 import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
-import 'package:figma2/main.dart';
 import 'package:flutter/material.dart';
 
 class SeeAllScreen extends StatefulWidget {
@@ -30,8 +28,6 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentUid = box.read('uid')?.toString();
-
     return Scaffold(
       backgroundColor: gbackgroundClr,
       appBar: AppBar(
@@ -67,9 +63,6 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
             itemBuilder: (context, index) {
               final data = docs[index].data() as Map<String, dynamic>;
               final docId = docs[index].id;
-              final isOwner = currentUid != null &&
-                  currentUid.isNotEmpty &&
-                  currentUid == data['uid']?.toString();
 
               return InkWell(
                 onTap: () => Navigator.push(
@@ -88,23 +81,11 @@ class _SeeAllScreenState extends State<SeeAllScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Stack(
-                        children: [
-                          SafeNetworkImage(
-                            url: data['image']?.toString(),
-                            height: 100,
-                            width: double.infinity,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          if (isOwner)
-                            Positioned(
-                              top: 4,
-                              right: 4,
-                              child: ProductImageReplaceButton(
-                                productId: docId,
-                              ),
-                            ),
-                        ],
+                      SafeNetworkImage(
+                        url: data['image']?.toString(),
+                        height: 100,
+                        width: double.infinity,
+                        borderRadius: BorderRadius.circular(5),
                       ),
                       const SizedBox(height: 8),
                       Text(

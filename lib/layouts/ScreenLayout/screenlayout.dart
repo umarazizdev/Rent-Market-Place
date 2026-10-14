@@ -1,8 +1,8 @@
 import 'package:figma2/Screens/BuyerScreens/AccountScreen/profilescreen.dart';
-import 'package:figma2/Screens/BuyerScreens/BoosterScreen/boostscreen.dart';
+import 'package:figma2/Screens/BuyerScreens/BuyScreen/buy_select_screen.dart';
 import 'package:figma2/Screens/BuyerScreens/HomeScreen/homescreen.dart';
 import 'package:figma2/Screens/BuyerScreens/MessageScreen/inbox.dart';
-import 'package:figma2/Screens/SellerScreens/LocationScreen/locationscreen.dart'; // FIX: import Lcat
+import 'package:figma2/Screens/SellerScreens/LocationScreen/locationscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:pandabar/main.view.dart';
 import 'package:pandabar/model.dart';
@@ -19,10 +19,10 @@ class _HomePageState extends State<HomePage> {
   Size sc = Utils().getScreenSize();
   String page = 'Home';
 
-  void _openBooster() {
+  void _openBuyFlow() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const BoosterScreen()),
+      MaterialPageRoute(builder: (context) => const BuySelectScreen()),
     );
   }
 
@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ),
-            onPressed: _openBooster), // FIXED: Buy pe Booster
+            onPressed: _openBuyFlow),
       ),
       extendBody: true,
       bottomNavigationBar: SizedBox(
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
               page = id;
             });
           },
-          onFabButtonPressed: _openBooster, // FIXED: FAB center press bhi Booster
+          onFabButtonPressed: _openBuyFlow,
         ),
       ),
       body: Builder(

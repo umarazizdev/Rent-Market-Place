@@ -1,149 +1,232 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:figma2/Screens/BuyerScreens/AccountScreen/about_app_screen.dart';
+import 'package:figma2/Screens/BuyerScreens/AccountScreen/profilepicture.dart';
+import 'package:figma2/Screens/BuyerScreens/FavoriteScreen/favoritescreen.dart';
 import 'package:figma2/Screens/SellerScreens/SellingScreen/sellingscreeen.dart';
-import 'package:figma2/Utilities/Colors/color.dart';
-import 'package:figma2/Utilities/Supabase/supabase_storage_service.dart';
+import 'package:figma2/Utilities/SignInScreen/loginscreen.dart';
 import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
 import 'package:figma2/main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:image_picker/image_picker.dart';
+import '../../../Utilities/Colors/color.dart';
 
 class SellProfile extends StatefulWidget {
   const SellProfile({super.key});
+
   @override
   State<SellProfile> createState() => _SellProfileState();
 }
 
 class _SellProfileState extends State<SellProfile> {
-  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
+  final FirebaseAuth auth = FirebaseAuth.instance;
+
+  final Stream<QuerySnapshot> _userStream = FirebaseFirestore.instance
       .collection('users')
       .where('uid', isEqualTo: box.read('uid'))
       .snapshots();
-  final _formKey = GlobalKey<FormState>();
-  var name = TextEditingController();
-  CollectionReference user = FirebaseFirestore.instance.collection('users');
-  XFile? singleImage;
 
-  chooseImage() async {
-    return await ImagePicker().pickImage(source: ImageSource.gallery);
-  }
-
-  Future<String> uploadImage(XFile? image, String oldName, String oldAvatar) async {
-    try {
-      String avatarUrl = oldAvatar;
-      if (image != null) {
-        avatarUrl = await SupabaseStorageService.uploadImage(image, folder: 'avatars');
-      }
-      String finalName = name.text.trim().isEmpty ? oldName : name.text.trim();
-
-      await user.doc(box.read('uid')).set({
-        'avatar': avatarUrl,
-        'name': finalName,
-        'uid': box.read('uid'),
-        'image': true,
-      }, SetOptions(merge: true)); // FIX: merge true
-
-      EasyLoading.showSuccess("Successfully Updated");
-      return avatarUrl;
-    } catch (error) {
-      EasyLoading.dismiss();
-      EasyLoading.showError('Update failed');
-      print("failedtoadduser: $error");
-      return '';
-    }
+  Future<void> signOut() async {
+    await auth.signOut();
+    if (!mounted) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: _usersStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) return const Text('Something went wrong');
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: primaryClr));
-        }
-        if (snapshot.data!.docs.isEmpty) return const Center(child: Text("No user found"));
+    return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _userStream,
+        builder: (context, snapshot) {
+          String userName = 'User';
+          String? avatarUrl;
+          if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+            final data =
+                snapshot.data!.docs.first.data() as Map<String, dynamic>;
+            userName = data['name']?.toString().trim().isNotEmpty == true
+                ? data['name'].toString()
+                : 'User';
+            avatarUrl = data['avatar']?.toString();
+          }
 
-        return ListView.builder(
-          shrinkWrap: true,
-          itemCount: snapshot.data!.docs.length,
-          itemBuilder: (context, index) {
-            final data = snapshot.data!.docs[index];
-            // auto fill controller first time
-            if (name.text.isEmpty) name.text = data['name'] ?? '';
-            return SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 30),
-                      InkWell(
-                        onTap: () async {
-                          singleImage = await chooseImage();
-                          if (singleImage != null) setState(() {});
-                        },
-                        child: Center(
-                          child: Container(
-                            height: 115, width: 115,
-                            decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.grey)),
-                            child: singleImage != null
-                                ? ClipRRect(borderRadius: BorderRadius.circular(60), child: Image.file(File(singleImage!.path), height: 115, width: 115, fit: BoxFit.cover))
-                                : Stack(children: [
-                                    SafeAvatar(url: data['avatar']?.toString(), radius: 55),
-                                    Positioned(bottom: 0, right: 0, child: Container(height: 25, width: 25, decoration: BoxDecoration(color: primaryClr.withOpacity(0.6), shape: BoxShape.circle), child: Icon(Icons.edit, color: blackclr.withOpacity(0.6), size: 20))),
-                                  ]),
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 120,
+                  color: primaryClr,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15.0, top: 38),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProfilePhotoScreen(),
                           ),
-                        ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          avatarUrl != null && avatarUrl.isNotEmpty
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(30),
+                                  child: SafeNetworkImage(
+                                    url: avatarUrl,
+                                    height: 60,
+                                    width: 60,
+                                  ),
+                                )
+                              : Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage(
+                                        'assets/profilephoto.png',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  userName,
+                                  style: const TextStyle(
+                                    color: whiteclr,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                const Text(
+                                  'View And Edit Profile',
+                                  style: TextStyle(
+                                    color: whiteclr,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 20),
-                      const Text("Name", style: TextStyle(color: blackclr, fontWeight: FontWeight.w500)),
-                      TextFormField(
-                        controller: name,
-                        decoration: InputDecoration(
-                          hintText: data['name'],
-                          labelStyle: TextStyle(color: blackclr.withOpacity(0.6)),
-                          suffixIcon: const Icon(Icons.edit, size: 20),
-                          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(45), borderSide: BorderSide.none),
-                          focusedBorder: const OutlineInputBorder(borderSide: BorderSide.none),
-                        ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SafeArea(
+                  top: false,
+                  child: Column(
+                    children: [
+                      _ProfileTile(
+                        asset: 'assets/megaphone (1) 2.png',
+                        title: 'Add Products',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SellingScreen(),
+                            ),
+                          );
+                        },
                       ),
-                      const SizedBox(height: 30),
-                      const Text("Uid", style: TextStyle(color: blackclr, fontWeight: FontWeight.w500)),
-                      const SizedBox(height: 20),
-                      Padding(padding: const EdgeInsets.only(left: 12.0), child: Text(data['uid'], style: TextStyle(color: blackclr.withOpacity(0.6), fontSize: 14))),
-                      const SizedBox(height: 40),
-                      SizedBox(
-                        height: 52, width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              EasyLoading.show();
-                              uploadImage(singleImage, data['name'] ?? '', data['avatar'] ?? '');
-                            }
-                          },
-                          child: const Text('Update Profile', style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
+                      _ProfileTile(
+                        asset: 'assets/heart (1) 1.png',
+                        title: 'My Favourites',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const FavoriteScreen(),
+                            ),
+                          );
+                        },
                       ),
-                      const SizedBox(height: 25),
-                      SizedBox(
-                        height: 52, width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SellingScreen())),
-                          child: const Text('Add Products', style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
+                      _ProfileTile(
+                        asset: 'assets/info-button 1.png',
+                        title: 'About App',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AboutAppScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      _ProfileTile(
+                        asset: 'assets/switch 1.png',
+                        title: 'Log Out',
+                        onTap: signOut,
+                        showDivider: false,
                       ),
                     ],
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ProfileTile extends StatelessWidget {
+  final String asset;
+  final String title;
+  final VoidCallback onTap;
+  final bool showDivider;
+
+  const _ProfileTile({
+    required this.asset,
+    required this.title,
+    required this.onTap,
+    this.showDivider = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 13),
+            child: Row(
+              children: [
+                Image.asset(asset, height: 27),
+                const SizedBox(width: 14),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const Spacer(),
+                const Icon(
+                  Icons.chevron_right,
+                  size: 18,
+                  color: Color(0xff928D8D),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (showDivider) const Divider(color: Color(0xffD9D9D9), height: 1),
+      ],
     );
   }
 }

@@ -66,7 +66,6 @@ class _SellingScreenState extends State<SellingScreen> {
     'Furniture',
     'Books',
     'Clothes',
-    'Services',
   ];
 
   @override

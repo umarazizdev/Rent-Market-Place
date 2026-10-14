@@ -9,5 +9,4 @@ List logoslist = [
   Logos(name: "Furniture", image: "assets/furniturelogo.png"),
   Logos(name: "Books", image: "assets/booklogo.png"),
   Logos(name: "Clothes", image: "assets/clotheslogo.png"),
-  Logos(name: "Services", image: "assets/serviceslogo.png"),
 ];

@@ -1,11 +1,11 @@
 import 'package:figma2/Screens/SellerScreens/MessageScreen/sellmessage.dart';
+import 'package:figma2/Screens/SellerScreens/OrdersScreen/sell_orders_screen.dart';
 import 'package:figma2/Screens/SellerScreens/SellScreen/sellscreen.dart';
 import 'package:figma2/Screens/SellerScreens/SellingScreen/sellingscreeen.dart';
 import 'package:flutter/material.dart';
 import 'package:pandabar/main.view.dart';
 import 'package:pandabar/model.dart';
 
-import '../../Screens/SellerScreens/LocationScreen/locationscreen.dart';
 import '../../Screens/SellerScreens/ProfileScreen/sellProfile.dart';
 import '../../Utilities/Colors/color.dart';
 
@@ -58,9 +58,9 @@ class _ScreenLayoutState extends State<ScreenLayout> {
             PandaBarButtonData(
                 id: 'Messages', icon: Icons.message_sharp, title: 'Messages'),
             PandaBarButtonData(
-                id: 'Location',
-                icon: Icons.location_on_outlined,
-                title: 'Location'),
+                id: 'Orders',
+                icon: Icons.receipt_long_outlined,
+                title: 'Orders'),
             PandaBarButtonData(
                 id: 'Profile', icon: Icons.person_outline, title: 'Profile'),
           ],
@@ -79,8 +79,8 @@ class _ScreenLayoutState extends State<ScreenLayout> {
               return const SellScreen();
             case 'Messages':
               return const SellMessageScreen();
-            case 'Location':
-              return const Lcat();
+            case 'Orders':
+              return const SellOrdersScreen();
             case 'Profile':
               return const SellProfile();
             default:
