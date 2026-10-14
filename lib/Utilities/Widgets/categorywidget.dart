@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Screens/BuyerScreens/HomeScreen/detailscreen.dart';
 import 'package:figma2/Utilities/Colors/color.dart';
+import 'package:figma2/Utilities/Widgets/product_image_replace_button.dart';
 import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
+import 'package:figma2/main.dart';
 import 'package:flutter/material.dart';
 
 class CategoryWidget extends StatelessWidget {
@@ -38,6 +40,10 @@ class CategoryWidget extends StatelessWidget {
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
               final data = snapshot.data!.docs[index];
+              final currentUid = box.read('uid')?.toString();
+              final isOwner = currentUid != null &&
+                  currentUid.isNotEmpty &&
+                  currentUid == data['uid']?.toString();
               return Padding(
                 padding: const EdgeInsets.only(left: 7.0, right: 7, top: 7),
                 child: InkWell(
@@ -61,19 +67,44 @@ class CategoryWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SafeNetworkImage(
-                          url: data['image']?.toString(),
-                          height: 36,
-                          width: double.infinity,
-                          borderRadius: BorderRadius.circular(2),
-                          placeholder: Container(
-                            color: const Color(0xffD9D9D9),
-                            child: const Icon(
-                              Icons.image_outlined,
-                              size: 16,
-                              color: Color(0xff928D8D),
+                        Stack(
+                          children: [
+                            SafeNetworkImage(
+                              url: data['image']?.toString(),
+                              height: 36,
+                              width: double.infinity,
+                              borderRadius: BorderRadius.circular(2),
+                              placeholder: Container(
+                                color: const Color(0xffD9D9D9),
+                                child: const Icon(
+                                  Icons.image_outlined,
+                                  size: 16,
+                                  color: Color(0xff928D8D),
+                                ),
+                              ),
                             ),
-                          ),
+                            if (isOwner)
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: GestureDetector(
+                                  onTap: () => ProductImageReplaceButton
+                                      .replaceImage(data.id),
+                                  child: Container(
+                                    padding: const EdgeInsets.all(2),
+                                    decoration: const BoxDecoration(
+                                      color: primaryClr,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.photo_camera,
+                                      color: Colors.white,
+                                      size: 10,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                         const SizedBox(height: 4),
                         Expanded(

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Screens/BuyerScreens/HomeScreen/detailscreen.dart';
+import 'package:figma2/Utilities/Widgets/product_image_replace_button.dart';
 import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
+import 'package:figma2/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -78,6 +80,10 @@ class _CarScreenState extends State<CarScreen> {
                       crossAxisCount: 2,
                       itemBuilder: (context, index) {
                         final data = snapshot.data!.docs[index];
+                        final currentUid = box.read('uid')?.toString();
+                        final isOwner = currentUid != null &&
+                            currentUid.isNotEmpty &&
+                            currentUid == data['uid']?.toString();
 
                         return Container(
                           height: 190,
@@ -98,14 +104,26 @@ class _CarScreenState extends State<CarScreen> {
                                             GetUserName(documentId: data.id),
                                       ));
                                 },
-                                child: SafeNetworkImage(
-                                  url: data['image']?.toString(),
-                                  height: 118,
-                                  width: double.infinity,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(4.5),
-                                    topRight: Radius.circular(4.5),
-                                  ),
+                                child: Stack(
+                                  children: [
+                                    SafeNetworkImage(
+                                      url: data['image']?.toString(),
+                                      height: 118,
+                                      width: double.infinity,
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(4.5),
+                                        topRight: Radius.circular(4.5),
+                                      ),
+                                    ),
+                                    if (isOwner)
+                                      Positioned(
+                                        top: 6,
+                                        right: 6,
+                                        child: ProductImageReplaceButton(
+                                          productId: data.id,
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ),
                               Expanded(

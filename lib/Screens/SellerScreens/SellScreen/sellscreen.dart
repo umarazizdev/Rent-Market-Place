@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:figma2/Models/Logos/logosmodel.dart';
 import 'package:figma2/Screens/DetailScreens/categorydetail.dart';
-import 'package:figma2/Utilities/Supabase/supabase_storage_service.dart';
+import 'package:figma2/Utilities/Widgets/product_image_replace_button.dart';
 import 'package:figma2/Utilities/Widgets/safe_network_image.dart';
 import 'package:figma2/main.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../Utilities/Colors/color.dart';
 import '../../BuyerScreens/HomeScreen/detailscreen.dart';
@@ -32,27 +30,6 @@ class _SellScreenState extends State<SellScreen> {
             .collection('products')
             .where('uid', isEqualTo: uid)
             .snapshots();
-  }
-
-  Future<void> _updateProductImage(String productId) async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (picked == null) return;
-
-    EasyLoading.show(status: 'Updating image...');
-    try {
-      final url = await SupabaseStorageService.uploadImage(
-        picked,
-        folder: 'products',
-      );
-      await FirebaseFirestore.instance
-          .collection('products')
-          .doc(productId)
-          .update({'image': url});
-      EasyLoading.showSuccess('Image updated');
-    } catch (e) {
-      EasyLoading.showError('Image update failed');
-      print('update image failed: $e');
-    }
   }
 
   @override
@@ -277,23 +254,8 @@ class _SellScreenState extends State<SellScreen> {
                                       Positioned(
                                         top: 6,
                                         right: 6,
-                                        child: Material(
-                                          color: primaryClr,
-                                          shape: const CircleBorder(),
-                                          child: InkWell(
-                                            customBorder:
-                                                const CircleBorder(),
-                                            onTap: () =>
-                                                _updateProductImage(data.id),
-                                            child: const Padding(
-                                              padding: EdgeInsets.all(6.0),
-                                              child: Icon(
-                                                Icons.photo_camera,
-                                                color: Colors.white,
-                                                size: 16,
-                                              ),
-                                            ),
-                                          ),
+                                        child: ProductImageReplaceButton(
+                                          productId: data.id,
                                         ),
                                       ),
                                     ],
