@@ -2,10 +2,10 @@ import 'package:figma2/Screens/BuyerScreens/AccountScreen/profilescreen.dart';
 import 'package:figma2/Screens/BuyerScreens/BoosterScreen/boostscreen.dart';
 import 'package:figma2/Screens/BuyerScreens/HomeScreen/homescreen.dart';
 import 'package:figma2/Screens/BuyerScreens/MessageScreen/inbox.dart';
+import 'package:figma2/Screens/SellerScreens/LocationScreen/locationscreen.dart'; // FIX: import Lcat
 import 'package:flutter/material.dart';
 import 'package:pandabar/main.view.dart';
 import 'package:pandabar/model.dart';
-
 import '../../Utilities/Colors/color.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,6 +18,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Size sc = Utils().getScreenSize();
   String page = 'Home';
+
+  void _openBooster() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const BoosterScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +42,7 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
             ),
-            onPressed: () {}),
+            onPressed: _openBooster), // FIXED: Buy pe Booster
       ),
       extendBody: true,
       bottomNavigationBar: SizedBox(
@@ -60,7 +67,7 @@ class _HomePageState extends State<HomePage> {
               page = id;
             });
           },
-          onFabButtonPressed: () {},
+          onFabButtonPressed: _openBooster, // FIXED: FAB center press bhi Booster
         ),
       ),
       body: Builder(
@@ -71,7 +78,7 @@ class _HomePageState extends State<HomePage> {
             case 'Messages':
               return const BuyerInbox();
             case 'Location':
-              return const BoosterScreen();
+              return const Lcat(); // FIXED: Location pe Lcat (seller wali location)
             case 'Profile':
               return const ProfileScreen();
             default:

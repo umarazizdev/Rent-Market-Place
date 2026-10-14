@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-
 import '../Colors/color.dart';
 
 class SearchWidget extends StatelessWidget {
   const SearchWidget({
     Key? key,
     required this.sc,
+    required this.onChanged, // ye naya add kiya
   }) : super(key: key);
 
   final Size sc;
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,8 @@ class SearchWidget extends StatelessWidget {
       child: SizedBox(
         height: sc.height * 0.05,
         width: sc.width / 1.1,
-        child: TextFormField(
+        child: TextFormField(cursorHeight: 15,
+          onChanged: onChanged, // yahan search chalegi
           decoration: InputDecoration(
             suffixIcon: Container(
                 height: sc.height * 0.05,

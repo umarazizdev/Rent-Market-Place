@@ -4,6 +4,7 @@ import 'package:figma2/Utilities/welcomeScreen/welcomescreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../Colors/color.dart';
 import '../../main.dart';
@@ -53,6 +54,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
+  Future<void> signInWithGoogle() async {
+  try {
+    EasyLoading.show(status: 'Signing with Google...');
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) { EasyLoading.dismiss(); return; }
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+    final userCred = await FirebaseAuth.instance.signInWithCredential(credential);
+    box.write('uid', userCred.user!.uid);
+    box.write('islogin', true);
+    await FirebaseFirestore.instance.collection('users').doc(userCred.user!.uid).set({
+      'name': userCred.user!.displayName ?? firstnamecontroller.text,
+      'email': userCred.user!.email,
+      'uid': userCred.user!.uid,
+      'avatar': userCred.user!.photoURL ?? '',
+      'image': true,
+    }, SetOptions(merge: true));
+    EasyLoading.dismiss();
+    EasyLoading.showSuccess("Successfully SignUp");
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => WelcomeScreen()), (route) => false);
+  } catch (e) {
+    EasyLoading.dismiss();
+    EasyLoading.showError(e.toString());
+  }
+}
+
   TextEditingController emailcontroller = TextEditingController();
   var passwordcontroller = TextEditingController();
   var firstnamecontroller = TextEditingController();
@@ -75,7 +102,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     height: 50,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                       signInWithGoogle(); 
+                    },
                     child: Container(
                       height: 55,
                       width: 391,

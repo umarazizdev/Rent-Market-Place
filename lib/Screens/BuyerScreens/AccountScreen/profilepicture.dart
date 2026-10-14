@@ -33,26 +33,28 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
     return await ImagePicker().pickImage(source: ImageSource.gallery);
   }
 
-  Future<String> uploadImage(XFile image) async {
-    try {
-      final value = await SupabaseStorageService.uploadImage(
-        image,
-        folder: 'avatars',
-      );
-      await user.doc(box.read('uid')).set({
-        'avatar': value,
-        'image': true,
-        'name': name.text,
-        'uid': box.read('uid')
-      });
-      EasyLoading.showSuccess("Successfully Added");
-      return value;
-    } catch (error) {
-      EasyLoading.showError('Upload failed');
-      print("failedtoadduser: $error");
-      return '';
+Future<String> uploadImage(XFile? image, String oldName, String oldAvatar) async {
+  try {
+    String avatarUrl = oldAvatar;
+    if (image != null) {
+      avatarUrl = await SupabaseStorageService.uploadImage(image, folder: 'avatars');
     }
+    String finalName = name.text.trim().isEmpty ? oldName : name.text.trim();
+    await user.doc(box.read('uid')).set({
+      'avatar': avatarUrl,
+      'name': finalName,
+      'uid': box.read('uid'),
+      'image': true,
+    }, SetOptions(merge: true));
+    EasyLoading.showSuccess("Successfully Updated");
+    return avatarUrl;
+  } catch (error) {
+    EasyLoading.dismiss();
+    EasyLoading.showError('Update failed');
+    print("failed: $error");
+    return '';
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -282,11 +284,11 @@ class _ProfilePhotoScreenState extends State<ProfilePhotoScreen> {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                EasyLoading.show();
-                                uploadImage(singleImage!);
-                              }
-                            },
+  if (_formKey.currentState!.validate()) {
+    EasyLoading.show();
+    uploadImage(singleImage, data['name'] ?? '', data['avatar'] ?? '');
+  }
+},
                             style: ButtonStyle(
                               shape: MaterialStateProperty.all(
                                 RoundedRectangleBorder(

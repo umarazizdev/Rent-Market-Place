@@ -25,8 +25,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.figma2"
-    compileSdk flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    compileSdk 35
+    ndkVersion "27.0.12077973"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -39,8 +39,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.figma2"
-        minSdk flutter.minSdkVersion
-        targetSdk flutter.targetSdkVersion
+        minSdk 24
+        targetSdk 34
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -58,7 +58,10 @@ flutter {
 }
 
 dependencies {
-    implementation platform("com.google.firebase:firebase-bom:31.2.0")
-    implementation "com.google.firebase:firebase-analytics-ktx"
+    // BOM update - ye channel-error fix karega
+    implementation platform("com.google.firebase:firebase-bom:32.8.1")
+    implementation "com.google.firebase:firebase-auth"
     implementation "androidx.multidex:multidex:2.0.1"
+    // Google SignIn ke liye zaruri
+    implementation "com.google.android.gms:play-services-auth:20.7.0"
 }

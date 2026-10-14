@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../Colors/color.dart';
 import '../../main.dart';
-import '../../Screens/BuyerScreens/GoogleScreen/googlescreen.dart';
 import '../SignUpScreen/signupscreen.dart';
 import '../welcomeScreen/welcomescreen.dart';
 
@@ -19,6 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isChecked = false;
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
+
   signin() async {
     try {
       final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -27,22 +29,66 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       box.write("uid", credential.user!.uid);
       box.write("islogin", true);
+      EasyLoading.dismiss();
       EasyLoading.showToast("Successfully signin");
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: ((context) => const WelcomeScreen())),
           (route) => false);
     } on FirebaseAuthException catch (e) {
+      EasyLoading.dismiss();
       if (e.code == 'user-not-found') {
         EasyLoading.showError("No user found for that email.");
-        print('No user found for that email.');
       } else if (e.code == 'wrong-password') {
         EasyLoading.showError("Wrong password provided for that user.");
-
-        print('Wrong password provided for that user.');
+      } else {
+        EasyLoading.showError(e.message.toString());
       }
     }
   }
+
+  // GOOGLE LOGIN - DIRECT
+ Future<void> signInWithGoogle() async {
+  try {
+    EasyLoading.show(status: 'Signing with Google...');
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    if (googleUser == null) {
+      EasyLoading.dismiss();
+      return;
+    }
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+    final userCred = await FirebaseAuth.instance.signInWithCredential(credential);
+
+    // Merge = true se user ka data overwrite nahi hoga
+    await FirebaseFirestore.instance.collection('users').doc(userCred.user!.uid).set({
+      'name': userCred.user!.displayName ?? 'User',
+      'email': userCred.user!.email,
+      'uid': userCred.user!.uid,
+      'avatar': userCred.user!.photoURL ?? '',
+      'image': true,
+      'createdAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
+
+    box.write("uid", userCred.user!.uid);
+    box.write("islogin", true);
+    EasyLoading.dismiss();
+    EasyLoading.showSuccess("Successfully signin");
+    
+    if(!mounted) return;
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: ((context) => const WelcomeScreen())),
+        (route) => false);
+  } catch (e) {
+    EasyLoading.dismiss();
+    EasyLoading.showError(e.toString());
+    debugPrint("Google Error: $e");
+  }
+}
 
   bool obsecureText = true;
   final formKey = GlobalKey<FormState>();
@@ -57,211 +103,90 @@ class _LoginScreenState extends State<LoginScreen> {
               key: formKey,
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  // ?????????????????????????????1st container
+                  const SizedBox(height: 50),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const GoogleScreen(),
-                        ),
-                      );
+                      // FIXED: Direct Google Login, GoogleScreen pe nahi bhejna
+                      signInWithGoogle();
                     },
                     child: Container(
                       height: 55,
                       width: 391,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(45),
-                        border: Border.all(
-                          color: borderClr,
-                        ),
+                        border: Border.all(color: borderClr),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 70.0,
-                        ),
+                        padding: const EdgeInsets.only(left: 70.0),
                         child: Row(
                           children: [
-                            Image.asset(
-                              "assets/unnamed-removebg.png",
-                              height: 40,
-                            ),
-                            const Text(
-                              "Sign In With",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: textClr,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
+                            Image.asset("assets/unnamed-removebg.png", height: 40),
+                            const Text("Sign In With", style: TextStyle(fontSize: 14, color: textClr, fontWeight: FontWeight.w400)),
                           ],
                         ),
                       ),
                     ),
                   ),
-
-                  // ?????????????????????????????2nd container
-                  const SizedBox(
-                    height: 50,
-                  ),
+                  const SizedBox(height: 50),
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0),
                     child: Row(
                       children: [
-                        Container(
-                          height: 1,
-                          width: 80,
-                          decoration: const BoxDecoration(color: borderClr),
-                        ),
-                        const SizedBox(
-                          width: 3,
-                        ),
-                        const Text(
-                          "Or Sign In With",
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: textClr,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        const SizedBox(
-                          width: 3,
-                        ),
-                        Container(
-                          height: 1,
-                          width: 85,
-                          decoration: const BoxDecoration(color: borderClr),
-                        ),
+                        Container(height: 1, width: 80, decoration: const BoxDecoration(color: borderClr)),
+                        const SizedBox(width: 3),
+                        const Text("Or Sign In With", style: TextStyle(fontSize: 14, color: textClr, fontWeight: FontWeight.w400)),
+                        const SizedBox(width: 3),
+                        Container(height: 1, width: 85, decoration: const BoxDecoration(color: borderClr)),
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 25,
-                  ),
+                  const SizedBox(height: 25),
                   SizedBox(
                     width: 391,
                     child: TextFormField(
                       controller: emailcontroller,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        return null;
-                      },
+                      validator: (value) => value == null || value.isEmpty ? 'Please enter your email' : null,
                       decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(
-                            left: 43, top: 23, bottom: 17),
+                        contentPadding: const EdgeInsets.only(left: 43, top: 23, bottom: 17),
                         hintText: "Enter Email",
-                        hintStyle: const TextStyle(
-                            color: textClr, fontWeight: FontWeight.w400),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(45),
-                          borderSide: const BorderSide(color: borderClr),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(45),
-                          borderSide: const BorderSide(color: borderClr),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(45),
-                          borderSide: const BorderSide(color: redclr),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(45),
-                          borderSide: const BorderSide(color: redclr),
-                        ),
+                        hintStyle: const TextStyle(color: textClr, fontWeight: FontWeight.w400),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(45), borderSide: const BorderSide(color: borderClr)),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(45), borderSide: const BorderSide(color: borderClr)),
+                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(45), borderSide: const BorderSide(color: redclr)),
+                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(45), borderSide: const BorderSide(color: redclr)),
                       ),
                     ),
                   ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  // ?????????????????????????????3rd container
-
+                  const SizedBox(height: 20),
                   SizedBox(
                     height: 55,
                     width: 391,
                     child: TextFormField(
                       obscureText: obsecureText,
                       controller: passwordcontroller,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
+                      validator: (value) => value == null || value.isEmpty ? 'Please enter your password' : null,
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              obsecureText = !obsecureText;
-                            });
-                          },
-                          icon: Icon(
-                            obsecureText == true
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                          ),
+                          onPressed: () => setState(() => obsecureText = !obsecureText),
+                          icon: Icon(obsecureText ? Icons.visibility : Icons.visibility_off),
                         ),
-                        contentPadding: const EdgeInsets.only(
-                            left: 43, top: 23, bottom: 17),
+                        contentPadding: const EdgeInsets.only(left: 43, top: 23, bottom: 17),
                         hintText: "Enter Password",
-                        hintStyle: const TextStyle(
-                            color: textClr, fontWeight: FontWeight.w400),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(45),
-                          borderSide: const BorderSide(color: borderClr),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(45),
-                          borderSide: const BorderSide(color: borderClr),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(45),
-                          borderSide: const BorderSide(color: redclr),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(45),
-                          borderSide: const BorderSide(color: redclr),
-                        ),
+                        hintStyle: const TextStyle(color: textClr, fontWeight: FontWeight.w400),
+                        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(45), borderSide: const BorderSide(color: borderClr)),
+                        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(45), borderSide: const BorderSide(color: borderClr)),
+                        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(45), borderSide: const BorderSide(color: redclr)),
+                        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(45), borderSide: const BorderSide(color: redclr)),
                       ),
                     ),
                   ),
                   Row(
                     children: [
-                      Checkbox(
-                        checkColor: Colors.white,
-                        fillColor: MaterialStateProperty.resolveWith(
-                            (states) => borderClr),
-                        value: isChecked,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            isChecked = value!;
-                          });
-                        },
-                      ),
-                      RichText(
-                        text: const TextSpan(
-                          text: "Remember Me",
-                          style: TextStyle(
-                              color: textClr,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400),
-                          children: [
-                            TextSpan(
-                                text: "*", style: TextStyle(color: primaryClr))
-                          ],
-                        ),
-                      )
+                      Checkbox(checkColor: Colors.white, fillColor: MaterialStateProperty.resolveWith((states) => borderClr), value: isChecked, onChanged: (bool? value) => setState(() => isChecked = value!)),
+                      RichText(text: const TextSpan(text: "Remember Me", style: TextStyle(color: textClr, fontSize: 12, fontWeight: FontWeight.w400), children: [TextSpan(text: "*", style: TextStyle(color: primaryClr))])),
                     ],
                   ),
-                  // ???????????????????????????????????4rth container
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   InkWell(
                     onTap: () {
                       if (formKey.currentState!.validate()) {
@@ -272,53 +197,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Container(
                       height: 55,
                       width: 391,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(45),
-                          color: primaryClr),
-                      child: const Center(
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: wbackgroundclr,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(45), color: primaryClr),
+                      child: const Center(child: Text("Login", style: TextStyle(fontSize: 24, color: wbackgroundclr, fontWeight: FontWeight.w700))),
                     ),
                   ),
-                  const SizedBox(
-                    height: 23,
-                  ),
+                  const SizedBox(height: 23),
                   InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignUpScreen(),
-                        ),
-                      );
-                    },
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpScreen())),
                     child: Padding(
                       padding: const EdgeInsets.only(left: 30.0),
-                      child: Row(
-                        children: [
-                          RichText(
-                            text: const TextSpan(
-                              text: "Not Ragister Yet?",
-                              style: TextStyle(
-                                  color: textClr,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w400),
-                              children: [
-                                TextSpan(
-                                    text: " Create An Account",
-                                    style: TextStyle(color: primaryClr))
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: Row(children: [RichText(text: const TextSpan(text: "Not Ragister Yet?", style: TextStyle(color: textClr, fontSize: 12, fontWeight: FontWeight.w400), children: [TextSpan(text: " Create An Account", style: TextStyle(color: primaryClr))]))]),
                     ),
                   ),
                 ],

@@ -17,9 +17,9 @@ void main() async {
   await GetStorage.init();
   await Firebase.initializeApp();
   await Supabase.initialize(
-    url: SupabaseConfig.url,
-    publishableKey: SupabaseConfig.publishableKey,
-  );
+  url: SupabaseConfig.url,
+  anonKey: SupabaseConfig.publishableKey,
+);
   runApp(const MyApp());
 }
 
